@@ -20,5 +20,8 @@ router.post(
   companiesControllers.createStaffController
 );
 router.get("/allcompanies", companiesControllers.getAllCompaniesController);
+router.post("/forgot-password", companiesControllers.forgotPasswordController);
+router.post("/verifyuser", companiesControllers.verifyUserController);
+router.post("/reset-password", companiesControllers.resetPasswordController);
 
 module.exports = router;

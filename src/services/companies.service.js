@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const Company = require("../models/company.model");
 const Staff = require("../models/staff.model");
 const responses = require("../utils/response");
-const { all } = require("../routes/payment.routes");
+const generateResetPin = require("../utils/generateResetPin");
+const sendMail = require("../utils/sendResetPasswordMail");
 
 const createCompanyService = async (payload) => {
   const { name, contactEmail, regNo } = payload;
@@ -102,20 +103,15 @@ const createStaffAccountService = async (payload) => {
 
   const foundContactNo = await Staff.findOne({ contactNo: contactNo });
   if (foundContactNo) {
-    return {
-      message: "Phone number already exists",
-      statusCode: 400,
-      status: "failure",
-    };
+    return responses.buildFailureResponse("Phone number already exists", 400);
   }
 
   const newStaff = await Staff.create(payload);
-  return {
-    message: "Account created successfully",
-    statusCode: 201,
-    status: "success",
-    data: newStaff,
-  };
+  return responses.buildSuccessResponse(
+    "Account created successfully",
+    201,
+    newStaff
+  );
 };
 
 const AdminLoginService = async (payload) => {
@@ -123,11 +119,7 @@ const AdminLoginService = async (payload) => {
 
   const foundStaff = await Staff.findOne({ contactEmail: contactEmail }).lean();
   if (!foundStaff) {
-    return {
-      message: "User not found",
-      status: "Failure",
-      statusCode: 404,
-    };
+    return responses.buildFailureResponse("User not found", 404);
   }
 
   if (foundStaff.role !== "admin") {
@@ -136,11 +128,7 @@ const AdminLoginService = async (payload) => {
 
   const passwordMatch = await bcrypt.compare(password, foundStaff.password);
   if (!passwordMatch) {
-    return {
-      message: "Password Incorrect",
-      status: "Failure",
-      statusCode: 400,
-    };
+    return responses.buildFailureResponse("Password Incorrect", 400);
   }
 
   const token = jwt.sign(
@@ -156,7 +144,7 @@ const AdminLoginService = async (payload) => {
     }
   );
 
-  foundStaff.accessTokentoken = token;
+  foundStaff.accessToken = token;
   return responses.buildSuccessResponse("Login successful", 200, foundStaff);
 };
 
@@ -176,10 +164,99 @@ const getAllCompaniesService = async () => {
   );
 };
 
+const forgotPasswordService = async (payload) => {
+  const { contactEmail } = payload;
+  const foundEmail = await Staff.findOne({ contactEmail: contactEmail });
+  if (!foundEmail) {
+    return responses.buildFailureResponse("Email not found", 400);
+  }
+  const resetPin = generateResetPin();
+  const updatedUser = await Staff.findByIdAndUpdate(
+    { _id: foundEmail._id },
+    { resetPin, resetPin },
+    { new: true }
+  );
+
+  const forgotPasswordPayload = {
+    to: updatedUser.contactEmail,
+    subject: "RESET PASSWORD",
+    pin: resetPin,
+  };
+
+  await sendMail.sendForgotPasswordMail(forgotPasswordPayload);
+  return responses.buildSuccessResponse(
+    "Forgot Password Successful",
+    200,
+    updatedUser
+  );
+};
+
+const resetPasswordService = async (payload) => {
+  const { contactEmail, resetPin } = payload;
+
+  const foundUserAndPin = await Staff.findOne(
+    { contactEmail: contactEmail },
+    { resetPin: resetPin }
+  );
+
+  if (!foundUserAndPin) {
+    return responses.buildFailureResponse("Reset Pin Invalid", 400);
+  }
+
+  //hashing new password
+  const saltRounds = 10; //typically stored in dotenv
+  const generatedSalt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(payload.password, generatedSalt);
+
+  const updatedUser = await Staff.findByIdAndUpdate(
+    { _id: foundUserAndPin._id },
+    { password: hashedPassword, resetPin: null },
+    { new: true }
+  );
+
+  return responses.buildSuccessResponse(
+    "Password Reset Successful",
+    200,
+    updatedUser
+  );
+};
+
+const verifyUserService = async (payload) => {
+  const { firstName, lastName, companyName } = payload;
+  const foundUser = await Staff.findOne({
+    firstName: firstName,
+    lastName: lastName,
+  });
+  if (!foundUser) {
+    return responses.buildFailureResponse("User not found", 400);
+  }
+  const foundCompany = await Company.findOne({ name: companyName });
+  if (!foundCompany) {
+    return responses.buildFailureResponse("Company not found", 400);
+  }
+  if (!foundCompany._id.equals(foundUser.company)) {
+    return responses.buildFailureResponse(
+      `${foundUser.firstName + " " + foundUser.lastName} does not work at ${
+        foundCompany.name
+      }`,
+      400
+    );
+  }
+  return responses.buildSuccessResponse(
+    `${foundUser.firstName + " " + foundUser.lastName} works at ${
+      foundCompany.name
+    }`,
+    200
+  );
+};
+
 module.exports = {
   createCompanyService,
   AdminLoginService,
   createAdminAccountService,
   createStaffAccountService,
   getAllCompaniesService,
+  forgotPasswordService,
+  verifyUserService,
+  resetPasswordService,
 };

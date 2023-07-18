@@ -45,6 +45,9 @@ const staffSchema = mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    resetPin: {
+      type: Number,
+    },
   },
 
   {

@@ -4,7 +4,6 @@ const rateLimit = require("express-rate-limit");
 
 const paymentRouter = require("./routes/payment.routes");
 const companyRouter = require("./routes/companies.routes");
-const verifyUserService = require("./services/companies.service");
 const connectDB = require("./configs/database");
 
 dotenv.config();
@@ -25,9 +24,8 @@ app.use(limiter);
 app.use("/pay", paymentRouter);
 app.use("/company", companyRouter);
 
-app.post("/verifyuser", async (req, res) => {
-  const response = await verifyUserService.verifyUserService;
-  res.status(200).message(response);
+app.get("/", async (req, res) => {
+  res.send("I am running fast");
 });
 
 app.listen(PORT, () => {

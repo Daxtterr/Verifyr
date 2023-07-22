@@ -221,32 +221,24 @@ const resetPasswordService = async (payload) => {
   );
 };
 
-const verifyUserService = async (payload) => {
-  const { firstName, lastName, companyName } = payload;
-  const foundUser = await Staff.findOne({
-    firstName: firstName,
-    lastName: lastName,
-  });
-  if (!foundUser) {
-    return responses.buildFailureResponse("User not found", 400);
-  }
-  const foundCompany = await Company.findOne({ name: companyName });
-  if (!foundCompany) {
-    return responses.buildFailureResponse("Company not found", 400);
-  }
-  if (!foundCompany._id.equals(foundUser.company)) {
-    return responses.buildFailureResponse(
-      `${foundUser.firstName + " " + foundUser.lastName} does not work at ${
-        foundCompany.name
-      }`,
-      400
-    );
-  }
+const findStaffService = async (query) => {
+  const searchKeyword = query.search
+    ? {
+        $or: [
+          { firstName: { $regex: query.search, $options: "i" } },
+          { lastName: { $regex: query.search, $options: "i" } },
+          { contactEmail: { $regex: query.search, $options: "i" } },
+          { contactNo: { $regex: query.search, $options: "i" } },
+        ],
+        company: query.company,
+      }
+    : {};
+
+  const foundStaff = await Staff.find(searchKeyword);
   return responses.buildSuccessResponse(
-    `${foundUser.firstName + " " + foundUser.lastName} works at ${
-      foundCompany.name
-    }`,
-    200
+    "Staff found successfully",
+    200,
+    foundStaff
   );
 };
 
@@ -257,6 +249,6 @@ module.exports = {
   createStaffAccountService,
   getAllCompaniesService,
   forgotPasswordService,
-  verifyUserService,
+  findStaffService,
   resetPasswordService,
 };

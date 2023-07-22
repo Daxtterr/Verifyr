@@ -21,7 +21,7 @@ router.post(
 );
 router.get("/allcompanies", companiesControllers.getAllCompaniesController);
 router.post("/forgot-password", companiesControllers.forgotPasswordController);
-router.post("/verifyuser", companiesControllers.verifyUserController);
+router.get("/staff", companiesControllers.findStaffController);
 router.post("/reset-password", companiesControllers.resetPasswordController);
 
 module.exports = router;

@@ -8,9 +8,12 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "build": "echo \"Daxter's server is running\""
+    "start": "babel-node src/index.js",
+    "dev": "nodemon -- exec babel-node src/index.js",
+    "build": "babel ./src --out-dir ./dist --source-maps",
+    "build:clean": "rm -rf dist",
+    "prebuild": "npm run build:clean",
+    "start:prod": "npm run build && node ./dist/index.js"
   },
   "author": "Daxter",
   "license": "ISC",
@@ -25,6 +28,10 @@
     "mongoose": "^7.3.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.9",
+    "@babel/core": "^7.22.9",
+    "@babel/node": "^7.22.6",
+    "@babel/preset-env": "^7.22.9",
     "nodemon": "^2.0.22"
   }
 }

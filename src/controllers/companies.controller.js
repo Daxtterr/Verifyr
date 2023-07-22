@@ -72,8 +72,8 @@ const getAllCompaniesController = async (req, res) => {
   }
 };
 
-const verifyUserController = async (req, res) => {
-  const response = await companyService.verifyUserService(req.body);
+const findStaffController = async (req, res) => {
+  const response = await companyService.findStaffService(req.query);
   res.status(response.statusCode).json(response);
 };
 
@@ -96,6 +96,6 @@ module.exports = {
   AdminLoginController,
   getAllCompaniesController,
   forgotPasswordController,
-  verifyUserController,
+  findStaffController,
   resetPasswordController,
 };

@@ -8,7 +8,7 @@ const connectDB = require("./configs/database");
 
 dotenv.config();
 const app = express();
-app.set("trust proxy", 1);
+app.enable("trust proxy");
 const PORT = process.env.PORT || 3001;
 
 const limiter = rateLimit({

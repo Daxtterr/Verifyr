@@ -1,18 +1,20 @@
-function paymentController (req,res){
-    console.log(req.body)
-    res.status(200).json({ message: "Payment successful" });
+const paymentServices = require("../services/payments.services");
 
-}
-
-
-function getReceipt (req,res){
-    console.log(req.body)
-    res.status(200).json({ message: "Receipt gotten" });
-
-}
-
+const initiatePaymentController = async (req, res) => {
+  try {
+    const response = await paymentServices.initiatePaymentService(req.user);
+    res.status(response.statusCode).json(response);
+  } catch (error) {
+    return (
+      res.status(500),
+      json({
+        message: "Unable to make payment",
+        status: "failure",
+      })
+    );
+  }
+};
 
 module.exports = {
-    paymentController,
-    getReceipt,
-  };
+  initiatePaymentController,
+};

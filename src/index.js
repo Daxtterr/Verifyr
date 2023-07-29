@@ -19,7 +19,7 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-connectDB(process.env.mongo_uri);
+connectDB(process.env.MONGO_URI);
 
 app.use(express.json());
 app.use(limiter);

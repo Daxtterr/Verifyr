@@ -62,8 +62,7 @@ const createAdminAccountService = async (payload) => {
     };
   }
 
-  const saltRounds = 10; //typically stored in dotenv
-  const generatedSalt = await bcrypt.genSalt(saltRounds);
+  const generatedSalt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
   const hashedPassword = await bcrypt.hash(payload.password, generatedSalt);
   payload.password = hashedPassword;
   payload.role = "admin";
@@ -75,18 +74,6 @@ const createAdminAccountService = async (payload) => {
     status: "success",
     data: newAdmin,
   };
-
-  // const foundEmailOrPhone = await Staff.findOne({
-  //   $or: [{ email: payload.email }, { email: payload.phone }],
-  // });
-
-  // if (foundEmailOrPhone) {
-  //   return {
-  //     message: "Staff phone or email duplicated",
-  //     statusCode: 400,
-  //     status: "failure",
-  //   };
-  // }
 };
 
 const createStaffAccountService = async (payload) => {
@@ -183,7 +170,7 @@ const forgotPasswordService = async (payload) => {
     pin: resetPin,
   };
 
-  await sendMail.sendForgotPasswordMail(forgotPasswordPayload);
+  sendMail.sendForgotPasswordMail(forgotPasswordPayload);
   return responses.buildSuccessResponse(
     "Forgot Password Successful",
     200,
@@ -204,8 +191,7 @@ const resetPasswordService = async (payload) => {
   }
 
   //hashing new password
-  const saltRounds = 10; //typically stored in dotenv
-  const generatedSalt = await bcrypt.genSalt(saltRounds);
+  const generatedSalt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
   const hashedPassword = await bcrypt.hash(payload.password, generatedSalt);
 
   const updatedUser = await Staff.findByIdAndUpdate(

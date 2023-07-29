@@ -37,7 +37,7 @@ const staffSchema = mongoose.Schema(
     },
     company: {
       type: mongoose.Types.ObjectId,
-      ref: "companies",
+      ref: "company",
       required: true,
     },
     role: {

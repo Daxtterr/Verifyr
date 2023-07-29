@@ -37,7 +37,8 @@ const sendForgotPasswordMail = (mailPayload) => {
   sgMail
     .send(msg)
     .then((response) => {
-      //console.log(response[0].statusCode);
+      console.log("mail sent");
+      console.log(response[0].statusCode);
       //console.log(response[0].headers);
     })
     .catch((error) => {

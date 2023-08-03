@@ -9,4 +9,6 @@ router.post(
   paymentsController.initiatePaymentController
 );
 
+router.post("/webhook", paymentsController.paystackWebhookController);
+
 module.exports = router;

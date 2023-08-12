@@ -8,11 +8,7 @@ router.post(
   "/createcompanyaccount",
   companiesControllers.createCompanyController
 );
-router.post(
-  "/createadmin",
-  authMiddleware.authenticate,
-  companiesControllers.createAdminController
-);
+router.post("/createadmin", companiesControllers.createAdminController);
 router.post("/adminlogin", companiesControllers.AdminLoginController);
 router.post(
   "/createstaff",

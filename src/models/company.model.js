@@ -30,7 +30,6 @@ const companySchema = mongoose.Schema({
   },
   logo: {
     type: String,
-    required: true,
   },
   status: {
     type: String,

@@ -4,7 +4,7 @@ const Company = require("../models/company.model");
 const Staff = require("../models/staff.model");
 const responses = require("../utils/response");
 const generateResetPin = require("../utils/generateResetPin");
-const sendMail = require("../utils/sendResetPasswordMail");
+const sendMail = require("../utils/sendMail");
 
 const createCompanyService = async (payload) => {
   const { name, contactEmail, regNo } = payload;

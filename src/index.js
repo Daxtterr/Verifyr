@@ -4,6 +4,7 @@ const rateLimit = require("express-rate-limit");
 
 const paymentRouter = require("./routes/payment.routes");
 const companyRouter = require("./routes/companies.routes");
+//const job = require("./utils/scheduler")
 const connectDB = require("./configs/database");
 
 dotenv.config();
@@ -20,6 +21,7 @@ const limiter = rateLimit({
 });
 
 connectDB(process.env.MONGO_URI);
+//job.start()
 
 app.use(express.json());
 app.use(limiter);

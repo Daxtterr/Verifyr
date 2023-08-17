@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const companySchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
     unique: true,
   },
   address: {
     type: String,
-    required: true,
   },
   regNo: {
     type: String,

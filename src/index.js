@@ -4,13 +4,12 @@ const rateLimit = require("express-rate-limit");
 
 const paymentRouter = require("./routes/payment.routes");
 const companyRouter = require("./routes/companies.routes");
+const seedAdmin = require("./seeding/index");
 //const job = require("./utils/scheduler")
 const connectDB = require("./configs/database");
 
 dotenv.config();
 const app = express();
-app.enable("trust proxy");
-app.set("trust proxy", 1);
 const PORT = process.env.PORT || 3001;
 
 const limiter = rateLimit({
@@ -21,6 +20,7 @@ const limiter = rateLimit({
 });
 
 connectDB(process.env.MONGO_URI);
+seedAdmin();
 //job.start()
 
 app.use(express.json());

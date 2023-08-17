@@ -4,41 +4,41 @@ const staffSchema = mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      //required: true,
     },
     lastName: {
       type: String,
-      required: true,
+      //required: true,
     },
     password: {
       type: String,
     },
     contactNo: {
       type: String,
-      required: true,
+      //required: true,
       unique: true,
     },
     contactEmail: {
       type: String,
-      required: true,
+      //required: true,
       unique: true,
     },
     staffId: {
       type: String,
-      required: true,
+      //required: true,
     },
     companyRole: {
       type: String,
-      required: true,
+      //required: true,
     },
     dateOfBirth: {
       type: String,
-      required: true,
+      //required: true,
     },
     company: {
       type: mongoose.Types.ObjectId,
       ref: "company",
-      required: true,
+      //required: true
     },
     role: {
       type: String,

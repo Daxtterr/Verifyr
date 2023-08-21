@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const rateLimit = require("express-rate-limit");
+const cors = require("cors");
 
 const paymentRouter = require("./routes/payment.routes");
 const companyRouter = require("./routes/companies.routes");
@@ -11,6 +12,13 @@ const connectDB = require("./configs/database");
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

@@ -221,6 +221,9 @@ const findStaffService = async (query) => {
     : {};
 
   const foundStaff = await Staff.find(searchKeyword);
+  if (!foundStaff) {
+    return responses.buildFailureResponse("Staff not found", 400);
+  }
   return responses.buildSuccessResponse(
     "Staff found successfully",
     200,

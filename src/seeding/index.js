@@ -2,14 +2,14 @@ const Staff = require("../models/staff.model");
 const bcrypt = require("bcrypt");
 
 const seedAdmin = async () => {
-  const foundAdmin = await Staff.find({ role: "admin" });
+  const foundAdmin = await Staff.find({ role: "superadmin" });
   if (foundAdmin.length < 1) {
     const data = {
       firstName: "Main",
       lastName: "Admin",
       password: "testing",
       contactEmail: "admin@gmail.com",
-      role: "admin",
+      role: "superadmin",
     };
 
     const genSalt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));

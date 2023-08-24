@@ -191,7 +191,7 @@ const resetPasswordService = async (payload) => {
   }
 
   //hashing new password
-  const generatedSalt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
+  const generatedSalt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
   const hashedPassword = await bcrypt.hash(payload.password, generatedSalt);
 
   const updatedUser = await Staff.findByIdAndUpdate(
@@ -215,6 +215,28 @@ const findStaffService = async (query) => {
           { lastName: { $regex: query.search, $options: "i" } },
           { contactEmail: { $regex: query.search, $options: "i" } },
           { contactNo: { $regex: query.search, $options: "i" } },
+          {
+            $expr: {
+              $regexMatch: {
+                input: {
+                  $concat: ["$firstName", " ", "$lastName"],
+                },
+                regex: query.search,
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: {
+                  $concat: ["$lastName", " ", "$firstName"],
+                },
+                regex: query.search,
+                options: "i",
+              },
+            },
+          },
         ],
         company: query.company,
       }

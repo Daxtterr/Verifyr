@@ -208,49 +208,53 @@ const resetPasswordService = async (payload) => {
 };
 
 const findStaffService = async (query) => {
-  const searchKeyword = query.search
-    ? {
-        $or: [
-          { firstName: { $regex: query.search, $options: "i" } },
-          { lastName: { $regex: query.search, $options: "i" } },
-          { contactEmail: { $regex: query.search, $options: "i" } },
-          { contactNo: { $regex: query.search, $options: "i" } },
-          {
-            $expr: {
-              $regexMatch: {
-                input: {
-                  $concat: ["$firstName", " ", "$lastName"],
+  try {
+    const searchKeyword = query.search
+      ? {
+          $or: [
+            { firstName: { $regex: query.search, $options: "i" } },
+            { lastName: { $regex: query.search, $options: "i" } },
+            { contactEmail: { $regex: query.search, $options: "i" } },
+            { contactNo: { $regex: query.search, $options: "i" } },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: {
+                    $concat: ["$firstName", " ", "$lastName"],
+                  },
+                  regex: query.search,
+                  options: "i",
                 },
-                regex: query.search,
-                options: "i",
               },
             },
-          },
-          {
-            $expr: {
-              $regexMatch: {
-                input: {
-                  $concat: ["$lastName", " ", "$firstName"],
+            {
+              $expr: {
+                $regexMatch: {
+                  input: {
+                    $concat: ["$lastName", " ", "$firstName"],
+                  },
+                  regex: query.search,
+                  options: "i",
                 },
-                regex: query.search,
-                options: "i",
               },
             },
-          },
-        ],
-        company: query.company,
-      }
-    : {};
+          ],
+          company: query.company,
+        }
+      : {};
 
-  const foundStaff = await Staff.find(searchKeyword);
-  if (foundStaff.length === 0) {
-    return responses.buildFailureResponse("Staff not found", 400);
+    const foundStaff = await Staff.find(searchKeyword);
+    if (foundStaff.length === 0) {
+      return responses.buildFailureResponse("Staff not found", 400);
+    }
+    return responses.buildSuccessResponse(
+      "Staff found successfully",
+      200,
+      foundStaff
+    );
+  } catch (error) {
+    responses.buildFailureResponse("Error finding staff", 400);
   }
-  return responses.buildSuccessResponse(
-    "Staff found successfully",
-    200,
-    foundStaff
-  );
 };
 
 module.exports = {

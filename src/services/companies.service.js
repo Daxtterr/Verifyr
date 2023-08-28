@@ -244,7 +244,7 @@ const findStaffService = async (query) => {
       : {};
 
     const foundStaff = await Staff.find(searchKeyword);
-    if (foundStaff.length === 0 || foundStaff[0].role === "superadmin") {
+    if (foundStaff.length === 0) {
       return responses.buildFailureResponse("Staff not found", 400);
     }
     return responses.buildSuccessResponse(

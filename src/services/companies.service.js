@@ -257,6 +257,17 @@ const findStaffService = async (query) => {
   }
 };
 
+const getAllStaffService = async (user) => {
+  const allStaff = await Staff.find({ company: user.company });
+  if (!allStaff) {
+    return responses.buildFailureResponse(
+      "Cannot fetch staff at this time",
+      404
+    );
+  }
+  return responses.buildSuccessResponse("Available Staff", 200, allStaff);
+};
+
 module.exports = {
   createCompanyService,
   AdminLoginService,
@@ -266,4 +277,5 @@ module.exports = {
   forgotPasswordService,
   findStaffService,
   resetPasswordService,
+  getAllStaffService,
 };

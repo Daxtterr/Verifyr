@@ -89,6 +89,18 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
+const getAllStaffController = async (req, res) => {
+  try {
+    const response = await companyService.getAllStaffService(req.user);
+    res.status(response.statusCode).json(response);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to reset password",
+      status: "failure",
+    });
+  }
+};
+
 module.exports = {
   createCompanyController,
   createAdminController,
@@ -98,4 +110,5 @@ module.exports = {
   forgotPasswordController,
   findStaffController,
   resetPasswordController,
+  getAllStaffController
 };

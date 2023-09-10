@@ -31,7 +31,7 @@ router.get("/allcompanies", companiesControllers.getAllCompaniesController);
 router.post("/forgot-password", companiesControllers.forgotPasswordController);
 router.get("/staff", companiesControllers.findStaffController);
 router.post("/reset-password", companiesControllers.resetPasswordController);
-router.get(
+router.post(
   "/allstaff",
   authMiddleware.authenticate,
   companiesControllers.getAllStaffController

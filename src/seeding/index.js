@@ -10,6 +10,7 @@ const seedAdmin = async () => {
       password: "testing",
       contactEmail: "admin@gmail.com",
       role: "admin",
+      
     };
 
     const genSalt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));

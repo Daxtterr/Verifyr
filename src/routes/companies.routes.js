@@ -12,7 +12,7 @@ router.post(
 );
 router.post(
   "/createadmin",
-  //authMiddleware.authenticate,
+  authMiddleware.authenticate,
   inputValidators.createStaffValidator,
   companiesControllers.createAdminController
 );

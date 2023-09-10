@@ -102,8 +102,12 @@ const createStaffAccountService = async (payload) => {
 };
 
 const AdminLoginService = async (payload) => {
-  const { contactEmail, password } = payload;
+  const { contactEmail, password, companyName } = payload;
 
+  const foundCompany = await Company.findOne({ name: companyName });
+  if (!foundCompany) {
+    return responses.buildFailureResponse("Company not found", 404);
+  }
   const foundStaff = await Staff.findOne({ contactEmail: contactEmail }).lean();
   if (!foundStaff) {
     return responses.buildFailureResponse("User not found", 404);
@@ -111,6 +115,10 @@ const AdminLoginService = async (payload) => {
 
   if (foundStaff.role !== "admin") {
     return responses.buildFailureResponse("Only Admins Allowed", 403);
+  }
+
+  if (!foundCompany._id === foundStaff.company) {
+    return responses.buildFailureResponse("Credentials don't match", 400);
   }
 
   const passwordMatch = await bcrypt.compare(password, foundStaff.password);
@@ -257,8 +265,13 @@ const findStaffService = async (query) => {
   }
 };
 
-const getAllStaffService = async (user) => {
-  const allStaff = await Staff.find({ company: user.company });
+const getAllStaffService = async (user, payload) => {
+  const { companyName } = payload;
+  const foundCompany = await Company.findOne({ name: companyName });
+  if (!foundCompany) {
+    return responses.buildFailureResponse("Company doesnt exist", 404);
+  }
+  const allStaff = await Staff.find({ company: foundCompany._id });
   if (!allStaff) {
     return responses.buildFailureResponse(
       "Cannot fetch staff at this time",

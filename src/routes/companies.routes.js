@@ -12,8 +12,8 @@ router.post(
 );
 router.post(
   "/createadmin",
-  authMiddleware.authenticate,
-  //inputValidators.createStaffValidator,
+  //authMiddleware.authenticate,
+  inputValidators.createStaffValidator,
   companiesControllers.createAdminController
 );
 router.post(

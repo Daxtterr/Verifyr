@@ -102,9 +102,9 @@ const createStaffAccountService = async (payload) => {
 };
 
 const AdminLoginService = async (payload) => {
-  const { contactEmail, password, companyName } = payload;
+  const { contactEmail, password, companyId } = payload;
 
-  const foundCompany = await Company.findOne({ name: companyName });
+  const foundCompany = await Company.findOne({ _id: companyId });
   if (!foundCompany) {
     return responses.buildFailureResponse("Company not found", 404);
   }
@@ -266,8 +266,8 @@ const findStaffService = async (query) => {
 };
 
 const getAllStaffService = async (user, payload) => {
-  const { companyName } = payload;
-  const foundCompany = await Company.findOne({ name: companyName });
+  const { companyId } = payload;
+  const foundCompany = await Company.findOne({ _id: companyId });
   if (!foundCompany) {
     return responses.buildFailureResponse("Company doesnt exist", 404);
   }

@@ -117,8 +117,9 @@ const AdminLoginService = async (payload) => {
     return responses.buildFailureResponse("Only Admins Allowed", 403);
   }
 
-  if (!foundCompany._id === foundStaff.company) {
-    return responses.buildFailureResponse("Credentials don't match", 400);
+  const userCompanyMatch = await Staff.findOne({ company: companyId });
+  if (!userCompanyMatch) {
+    return responses.buildFailureResponse("Credentials dont match", 403);
   }
 
   const passwordMatch = await bcrypt.compare(password, foundStaff.password);

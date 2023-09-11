@@ -46,7 +46,7 @@ const adminLoginValidator = async (req, res, next) => {
   const schema = Joi.object().keys({
     contactEmail: Joi.string().email().required(),
     password: Joi.string().required(),
-    companyName: Joi.string().required(),
+    companyId: Joi.string().hex().length(24),
   });
   try {
     await schema.validateAsync(req.body);

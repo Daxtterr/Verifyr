@@ -108,18 +108,17 @@ const AdminLoginService = async (payload) => {
   if (!foundCompany) {
     return responses.buildFailureResponse("Company not found", 404);
   }
-  const foundStaff = await Staff.findOne({ contactEmail: contactEmail }).lean();
+  const foundStaff = await Staff.findOne({
+    contactEmail: contactEmail,
+    company: companyId,
+  }).lean();
+
   if (!foundStaff) {
     return responses.buildFailureResponse("User not found", 404);
   }
 
   if (foundStaff.role !== "admin") {
     return responses.buildFailureResponse("Only Admins Allowed", 403);
-  }
-
-  const userCompanyMatch = await Staff.findOne({ company: companyId });
-  if (!userCompanyMatch) {
-    return responses.buildFailureResponse("Credentials dont match", 403);
   }
 
   const passwordMatch = await bcrypt.compare(password, foundStaff.password);

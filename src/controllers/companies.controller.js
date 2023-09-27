@@ -1,15 +1,17 @@
 const companyService = require("../services/companies.service");
 
 const createCompanyController = async (req, res) => {
-  try {
-    const response = await companyService.createCompanyService(req.body);
-    res.status(response.statusCode).json(response);
-  } catch (error) {
-    res.status(500).json({
-      message: "Unable to create account",
-      status: "failure",
-    });
-  }
+  // try {
+  //   const response = await companyService.createCompanyService(req.body);
+  //   res.status(response.statusCode).json(response);
+  // } catch (error) {
+  //   res.status(500).json({
+  //     message: "Unable to create account",
+  //     status: "failure",
+  //   });
+  // }
+  const response = await companyService.createCompanyService(req.body);
+  res.status(response.statusCode).json(response);
 };
 
 const createAdminController = async (req, res) => {
@@ -25,17 +27,15 @@ const createAdminController = async (req, res) => {
 };
 
 const AdminLoginController = async (req, res) => {
-  // try {
-  //   const response = await companyService.AdminLoginService(req.body);
-  //   res.status(response.statusCode).json(response);
-  // } catch (error) {
-  //   res.status(500).json({
-  //     message: "Unable to login",
-  //     status: "failure",
-  //   });
-  // }
-  const response = await companyService.AdminLoginService(req.body);
-  res.status(response.statusCode).json(response);
+  try {
+    const response = await companyService.AdminLoginService(req.body);
+    res.status(response.statusCode).json(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Unable to login",
+      status: "failure",
+    });
+  }
 };
 
 const createStaffController = async (req, res) => {

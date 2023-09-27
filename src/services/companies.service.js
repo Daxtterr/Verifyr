@@ -102,17 +102,12 @@ const createStaffAccountService = async (payload) => {
 };
 
 const AdminLoginService = async (payload) => {
-  const { contactEmail, password, companyId } = payload;
+  const { contactEmail, password } = payload;
 
-  const foundCompany = await Company.findOne({ _id: companyId });
-  if (!foundCompany) {
-    return responses.buildFailureResponse("Company not found", 404);
-  }
   const foundStaff = await Staff.findOne({
     contactEmail: contactEmail,
     company: companyId,
   }).lean();
-
   if (!foundStaff) {
     return responses.buildFailureResponse("User not found", 404);
   }
@@ -189,10 +184,10 @@ const forgotPasswordService = async (payload) => {
 const resetPasswordService = async (payload) => {
   const { contactEmail, resetPin } = payload;
 
-  const foundUserAndPin = await Staff.findOne(
-    { contactEmail: contactEmail },
-    { resetPin: resetPin }
-  );
+  const foundUserAndPin = await Staff.findOne({
+    contactEmail: contactEmail,
+    resetPin: resetPin,
+  });
 
   if (!foundUserAndPin) {
     return responses.buildFailureResponse("Reset Pin Invalid", 400);
